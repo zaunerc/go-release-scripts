@@ -4,33 +4,35 @@ set -e
 #set -x
 
 function usage {
-    echo "Usage: $0 [VERSION] [ARCH] [STDLIB]"
-    echo "Example: $0 0.2.0 x64 libmusl"
+    echo "Usage:   $0 [REPO] [ARCHIVE NAME] [VERSION] [ARCH] [STDLIB]"
+    echo "Example: $0 ./cntrinfod cntrinfod 0.2.0 x64 libmusl"
     exit 1
 }
 
-
-if [ "$#" -ne 3 ]; then
+if [ "$#" -ne 5 ]; then
 	usage
 fi
 
-VERSION="$1"
-ARCH="$2"
-STDLIB="$3"
+REPO_DIR="$1"
+ARCHIVE_NAME="$2"
+VERSION="$3"
+ARCH="$4"
+STDLIB="$5"
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 source $SCRIPT_DIR/common.sh
 
-cd "$SCRIPT_DIR/../"
+RELENG_DIR=$REPO_DIR/releng
+cd "$REPO_DIR"
 echo "Changed current working dir to $(pwd)"
 
-panic_if_working_is_copy_dirty
+panic_if_working_copy_is_dirty
 
 execute 'git checkout v$VERSION'
 execute 'go test'
 execute 'go build'
 
-cd "$SCRIPT_DIR"
+cd "$RELENG_DIR"
 echo "Changed current working dir to $(pwd)"
 
 ARCHIVE_ROOT="tmp"
@@ -41,6 +43,10 @@ fi
 
 mkdir "$ARCHIVE_ROOT"
 
+#####
+# Now call the project specific script which
+# is responsible to assemble the artifact.
+#
 mkdir -p "$ARCHIVE_ROOT/usr/local/bin"
 mkdir -p "$ARCHIVE_ROOT/usr/local/etc/cntrinfod"
 mkdir -p "$ARCHIVE_ROOT/usr/local/share/cntrinfod"
@@ -48,7 +54,10 @@ mkdir -p "$ARCHIVE_ROOT/usr/local/share/cntrinfod"
 cp ../cntrinfod "$ARCHIVE_ROOT/usr/local/bin"
 cp -r ../static_data/* "$ARCHIVE_ROOT/usr/local/share/cntrinfod"
 
-ARCHIVE="cntrinfod-v$VERSION-$ARCH-$STDLIB.tar.gz"
+#
+#####
+
+ARCHIVE="$ARCHIVE_NAME-v$VERSION-$ARCH-$STDLIB.tar.gz"
 tar -czf "$ARCHIVE" -C "$ARCHIVE_ROOT" usr
 
 cat << EOF

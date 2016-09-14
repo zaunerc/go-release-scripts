@@ -12,7 +12,7 @@ function confirm {
     esac
 }
 
-function panic_if_working_is_copy_dirty {
+function panic_if_working_copy_is_dirty {
 	if [ $(git status --porcelain | wc -l) -ne 0 ]; then
 		echo "Error: Git working directory is dirty."
 		exit 1
