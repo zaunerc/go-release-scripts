@@ -28,6 +28,7 @@ PATH_TO_REPO=$1
 RELEASE_VERSION=$2
 NEXT_DEV_VERSION=$3
 
+echo "Executing performRelease.sh"
 $SCRIPT_DIR/performRelease.sh $PATH_TO_REPO $RELEASE_VERSION $NEXT_DEV_VERSION
 
 ##########
@@ -39,10 +40,12 @@ STDLIB=$5
 
 ARCHIVE_PREFIX=$(basename "$(readlink -f "$1")")
 
+echo "Executing createTarGzPackage.sh"
 $SCRIPT_DIR/createTarGzPackage.sh $PATH_TO_REPO $ARCHIVE_PREFIX $VERSION $ARCH $STDLIB
 
 ##########
 
+PATH_TO_REPO=$1
 REPO_NAME=$(basename "$(readlink -f "$1")")
 VERSION=$2
 GITHUB_USERNAME=$6
@@ -50,4 +53,5 @@ GITHUB_USERNAME=$6
 # cntrinfod-v0.2.2-x64-libmusl.tar.gz
 FILE="$1/releng/$(basename "$(readlink -f "$1")")-v$2-$ARCH-${STDLIB}.tar.gz"
 
-$SCRIPT_DIR/uploadArtifactToGitHub.sh $REPO_NAME $VERSION $FILE $GITHUB_USERNAME
+echo "Executing uploadArtifactToGitHub.sh"
+$SCRIPT_DIR/uploadArtifactToGitHub.sh $PATH_TO_REPO $REPO_NAME $VERSION $FILE $GITHUB_USERNAME

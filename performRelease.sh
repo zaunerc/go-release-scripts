@@ -67,10 +67,16 @@ The following steps will be executed if you proceed:
 
 EOF
 
-if confirm "Proceed?" -ne 0 ]; then
-	git checkout "$BINARY.go"
-	exit 0
-fi
+# TODO: Does not work as expected. y is evaluated to n
+# and exit 0 does not terminate execution flow if
+# script is executed by another script (e.g. doAll.sh).
+#
+#if confirm "Proceed?" -ne 0 ]; then
+#	git checkout "$BINARY.go"
+#	exit 0
+#fi
+
+confirm "Proceed?"
 
 # master branch
 
