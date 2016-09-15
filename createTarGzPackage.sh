@@ -43,19 +43,10 @@ fi
 
 mkdir "$ARCHIVE_ROOT"
 
-#####
 # Now call the project specific script which
 # is responsible to assemble the artifact.
-#
-mkdir -p "$ARCHIVE_ROOT/usr/local/bin"
-mkdir -p "$ARCHIVE_ROOT/usr/local/etc/cntrinfod"
-mkdir -p "$ARCHIVE_ROOT/usr/local/share/cntrinfod"
-
-cp ../cntrinfod "$ARCHIVE_ROOT/usr/local/bin"
-cp -r ../static_data/* "$ARCHIVE_ROOT/usr/local/share/cntrinfod"
-
-#
-#####
+source ./assembleArtifact.sh
+assembleArtifact
 
 ARCHIVE="$ARCHIVE_NAME-v$VERSION-$ARCH-$STDLIB.tar.gz"
 tar -czf "$ARCHIVE" -C "$ARCHIVE_ROOT" usr

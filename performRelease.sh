@@ -17,6 +17,8 @@ REPO_PATH="$1"
 VERSION="$2"
 NEXT_VERSION="$3-SNAPSHOT"
 
+BINARY=$(basename "$(readlink -f "$REPO_PATH")")
+
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 source $SCRIPT_DIR/common.sh
 
@@ -31,7 +33,7 @@ fi
 panic_if_working_copy_is_dirty
 
 # Update version info
-execute 'sed --in-place "s/app.Version = \".*\"/app.Version = \"$VERSION\"/g" cntrinfod.go'
+execute 'sed --in-place "s/app.Version = \".*\"/app.Version = \"$VERSION\"/g" $BINARY.go'
 
 cat << EOF
 
@@ -65,19 +67,22 @@ The following steps will be executed if you proceed:
 
 EOF
 
-confirm "Proceed?"
+if confirm "Proceed?" -ne 0 ]; then
+	git checkout "$BINARY.go"
+	exit 0
+fi
 
 # master branch
 
 execute 'git commit -a -m "Release version $VERSION."'
-execute 'git tag --annotate "v$VERSION" --message "Release version $VERSION."'
+execute 'git tag --annotate "v$VERSION" --message "Release of version $VERSION."'
 
 # dev branch
 
 execute 'git checkout dev'
 execute 'git merge master'
 # Update version info
-execute 'sed --in-place "s/app.Version = \".*\"/app.Version = \"$NEXT_VERSION\"/g" cntrinfod.go'
+execute 'sed --in-place "s/app.Version = \".*\"/app.Version = \"$NEXT_VERSION\"/g" $BINARY.go'
 execute 'git commit -a -m "Starting development iteration on $NEXT_VERSION."'
 
 cat << EOF
