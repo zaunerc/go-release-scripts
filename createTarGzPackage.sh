@@ -4,7 +4,7 @@ set -e
 #set -x
 
 function usage {
-    echo "Usage:   $0 [REPO] [ARCHIVE NAME] [VERSION] [ARCH] [STDLIB]"
+    echo "Usage:   $0 [PATH TO REPO] [ARCHIVE PREFIX] [VERSION] [ARCH] [STDLIB]"
     echo "Example: $0 ./cntrinfod cntrinfod 0.2.0 x64 libmusl"
     exit 1
 }

@@ -4,30 +4,31 @@ set -e
 #set -x
 
 function usage {
-    echo "Usage: $0 [VERSION] [NEXT VERSION]"
-    echo "Example: $0 0.2.0 0.2.1"
+    echo "Usage: $0 [PATH TO REPO] [RELEASE VERSION] [NEXT DEV VERSION]"
+    echo "Example: $0 ./cntrinfod 0.2.1 0.2.2"
     exit 1
 }
 
-if [ "$#" -ne 2 ]; then
+if [ "$#" -ne 3 ]; then
 	usage
 fi
 
-VERSION="$1"
-NEXT_VERSION="$2-SNAPSHOT"
+REPO_PATH="$1"
+VERSION="$2"
+NEXT_VERSION="$3-SNAPSHOT"
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
-cd "$SCRIPT_DIR/.."
-echo "Changed current working dir to $(pwd)"
-
 source $SCRIPT_DIR/common.sh
+
+cd "$REPO_PATH"
+echo "Changed current working dir to $(pwd)"
 
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [ "$CURRENT_BRANCH" != "master" ]; then
 	error_exit "Releases are only suppored on master branch. Aborting!"
 fi
 
-panic_if_working_is_copy_dirty
+panic_if_working_copy_is_dirty
 
 # Update version info
 execute 'sed --in-place "s/app.Version = \".*\"/app.Version = \"$VERSION\"/g" cntrinfod.go'
