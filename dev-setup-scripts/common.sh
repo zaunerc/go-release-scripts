@@ -41,7 +41,7 @@ git config --global user.name "Christoph Zauner"
 
 
 You will have to run the following command before
-being able to use the new e.g. env vars in the
+being able to use e.g. the new env vars in the
 current shell:
 -------------------------------------------------
 
@@ -54,7 +54,7 @@ $ go get github.com/zaunerc/cntrbrowserd
 
 # Go 1.6 does not work with docker libs > 1.12.
 # Therefore run go get, glide up and finally 
-# go get one more. Go 1.7 has problems if
+# go get one more time. Go 1.7 has problems if
 # glibc is present under Alpine.
 #
 $ go get github.com/zaunerc/cntrinfod
