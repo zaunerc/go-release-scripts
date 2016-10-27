@@ -19,7 +19,7 @@ sudo apk add --no-cache \
 	ctags \
 	git \
 	glide@edge-community \
-	go 
+	go@edge-community 
 
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 $SCRIPT_DIR/common.sh
